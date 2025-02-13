@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+require('./config/passport'); // Import passport configuration
 const app = express();
 
 // Middleware configurations
