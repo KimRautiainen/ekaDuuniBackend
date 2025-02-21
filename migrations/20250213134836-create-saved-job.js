@@ -38,20 +38,41 @@ module.exports = {
       },
     });
 
-    //  Add a unique constraint to prevent duplicate saved jobs
+    // Add Unique Constraint
     await queryInterface.addConstraint('SavedJobs', {
       fields: ['user_id', 'job_id'],
       type: 'unique',
-      name: 'unique_saved_job_per_user', // Constraint name
+      name: 'unique_saved_job_per_user',
     });
   },
 
   async down(queryInterface, Sequelize) {
-    //  First remove the unique constraint before dropping the table
-    await queryInterface.removeConstraint(
-      'SavedJobs',
-      'unique_saved_job_per_user'
-    );
+    // ✅ Use the actual constraint names from your database
+    await queryInterface
+      .removeConstraint('SavedJobs', 'savedjobs_ibfk_1')
+      .catch(() =>
+        console.log(
+          'Foreign Key Constraint savedjobs_ibfk_1 not found, skipping'
+        )
+      );
+
+    await queryInterface
+      .removeConstraint('SavedJobs', 'savedjobs_ibfk_2')
+      .catch(() =>
+        console.log(
+          'Foreign Key Constraint savedjobs_ibfk_2 not found, skipping'
+        )
+      );
+
+    await queryInterface
+      .removeConstraint('SavedJobs', 'unique_saved_job_per_user')
+      .catch(() =>
+        console.log(
+          'Unique Constraint unique_saved_job_per_user not found, skipping'
+        )
+      );
+
+    // ✅ Drop Table
     await queryInterface.dropTable('SavedJobs');
   },
 };

@@ -49,9 +49,19 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Users_role";'
-    );
-    await queryInterface.dropTable('Users');
+    // ✅ Check if the column exists before trying to drop it
+    await queryInterface
+      .describeTable('Users')
+      .then(async (tableDefinition) => {
+        if (tableDefinition.role) {
+          await queryInterface
+            .removeColumn('Users', 'role')
+            .catch(() => console.log("Column 'role' not found, skipping"));
+        }
+      });
+
+    await queryInterface
+      .dropTable('Users')
+      .catch(() => console.log("Table 'Users' not found, skipping"));
   },
 };

@@ -36,9 +36,7 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_ProjectMedia_media_type";'
-    );
+    await queryInterface.removeColumn('ProjectMedia', 'media_type');
     await queryInterface.dropTable('ProjectMedia');
   },
 };

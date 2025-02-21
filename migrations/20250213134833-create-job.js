@@ -85,18 +85,10 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Jobs_apply_type";'
-    );
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Jobs_work_type";'
-    );
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Jobs_employment_type";'
-    );
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Jobs_salary_type";'
-    );
+    await queryInterface.removeColumn('Jobs', 'apply_type');
+    await queryInterface.removeColumn('Jobs', 'work_type');
+    await queryInterface.removeColumn('Jobs', 'employment_type');
+    await queryInterface.removeColumn('Jobs', 'salary_type');
     await queryInterface.dropTable('Jobs');
   },
 };

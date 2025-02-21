@@ -58,9 +58,7 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Applications_status";'
-    );
+    await queryInterface.removeColumn('Applications', 'status');
     await queryInterface.dropTable('Applications');
   },
 };
