@@ -1,0 +1,21 @@
+"sequelize:init": Initializes the Sequelize project by creating essential folders like models, migrations, and config.
+
+"db:create": Creates the database as specified in your configuration.
+
+"db:drop": Drops the database.
+
+"db:migrate": Applies all pending migrations to the database.
+
+"db:migrate:undo": Reverts the last applied migration.
+
+"db:migrate:status": Displays the status of all migrations, indicating which have been applied.
+
+"db:seed": Runs all seed files to populate the database with initial data.
+
+"db:seed:undo": Reverts all seed operations.
+
+"model:generate": Generates a new model along with its migration file.
+
+"migration:generate": Generates a new standalone migration file.
+
+"seed:generate": Generates a new seed file.
