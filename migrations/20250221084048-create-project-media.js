@@ -2,40 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('ProjectMedia', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      full_name: {
+      project_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'Projects', key: 'id' },
+        onDelete: 'CASCADE',
+      },
+      media_url: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      oauthProvider: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      oauthProviderId: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      password_hash: {
-        type: Sequelize.STRING,
+      media_type: {
+        type: Sequelize.ENUM('image', 'video'),
         allowNull: false,
       },
-      role: {
-        type: Sequelize.ENUM('junior_dev', 'employer'),
-        allowNull: false,
-        defaultValue: 'junior_dev',
-      },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -50,8 +37,8 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Users_role";'
+      'DROP TYPE IF EXISTS "enum_ProjectMedia_media_type";'
     );
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('ProjectMedia');
   },
 };

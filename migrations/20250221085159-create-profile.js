@@ -2,40 +2,48 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Profiles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      full_name: {
-        type: Sequelize.STRING,
+      user_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        references: { model: 'Users', key: 'id' },
+        onDelete: 'CASCADE',
         unique: true,
       },
-      oauthProvider: {
+      bio: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      location: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      oauthProviderId: {
+      phone_number: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      password_hash: {
+      linkedin: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      role: {
-        type: Sequelize.ENUM('junior_dev', 'employer'),
-        allowNull: false,
-        defaultValue: 'junior_dev',
+      github: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
-
+      portfolio: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      profile_picture: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -49,9 +57,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Users_role";'
-    );
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Profiles');
   },
 };

@@ -2,43 +2,52 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Applications', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      full_name: {
-        type: Sequelize.STRING,
+      user_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: 'Users', key: 'id' },
+        onDelete: 'CASCADE',
       },
-      email: {
-        type: Sequelize.STRING,
+      job_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true,
+        references: { model: 'Jobs', key: 'id' },
+        onDelete: 'CASCADE',
       },
-      oauthProvider: {
+      cover_letter: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      resume_link: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      oauthProviderId: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      password_hash: {
-        type: Sequelize.STRING,
+      status: {
+        type: Sequelize.ENUM(
+          'pending',
+          'reviewed',
+          'interview',
+          'rejected',
+          'accepted'
+        ),
         allowNull: false,
+        defaultValue: 'pending',
       },
-      role: {
-        type: Sequelize.ENUM('junior_dev', 'employer'),
-        allowNull: false,
-        defaultValue: 'junior_dev',
-      },
-
-      createdAt: {
-        allowNull: false,
+      applied_at: {
         type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
         defaultValue: Sequelize.NOW,
       },
       updatedAt: {
@@ -50,8 +59,8 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_Users_role";'
+      'DROP TYPE IF EXISTS "enum_Applications_status";'
     );
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Applications');
   },
 };
