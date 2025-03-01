@@ -56,9 +56,14 @@ module.exports = (sequelize, DataTypes) => {
 
   User.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       full_name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: DataTypes.STRING,
@@ -67,15 +72,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       password_hash: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
-      oauth_provider: {
+      oauthProvider: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      oauth_provider_id: {
+      oauthProviderId: {
         type: DataTypes.STRING,
         allowNull: true,
+        unique: true,
       },
       role: {
         type: DataTypes.ENUM('junior_dev', 'employer'),
@@ -88,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'User',
       tableName: 'users',
       timestamps: true,
-      underscored: true,
+      underscored: false,
     }
   );
 
