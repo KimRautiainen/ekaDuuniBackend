@@ -1,5 +1,4 @@
 const { Sequelize } = require('sequelize');
-const { MsSqlDialect } = require('@sequelize/mssql');
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -8,7 +7,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: MsSqlDialect,
+    dialect: 'mssql',
     dialectOptions: {
       options: {
         encrypt: true,
@@ -17,16 +16,5 @@ const sequelize = new Sequelize(
     },
   }
 );
-
-async function testConnection() {
-  try {
-    await sequelize.authenticate();
-    console.log('Yhteys tietokantaan onnistui.');
-  } catch (error) {
-    console.error('Yhteyden muodostaminen epäonnistui:', error);
-  }
-}
-
-testConnection();
 
 module.exports = sequelize;
