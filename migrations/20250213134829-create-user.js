@@ -11,7 +11,7 @@ module.exports = {
       },
       full_name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: Sequelize.STRING,
@@ -28,7 +28,7 @@ module.exports = {
       },
       password_hash: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       role: {
         type: Sequelize.ENUM('junior_dev', 'employer'),

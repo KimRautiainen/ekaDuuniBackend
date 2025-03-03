@@ -5,6 +5,7 @@ const passport = require('passport');
 const sequelize = require('./config/database'); // Import Sequelize instance
 require('./config/passport'); // Import passport configuration
 const app = express();
+const authRoutes = require('./routes/auth');
 
 // Middleware configurations
 app.use(express.json());
@@ -12,7 +13,7 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     // cookie: { secure: true }, // Set 'secure' to true if using HTTPS
   })
 );
@@ -20,7 +21,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Define routes
-app.use('/auth', require('./routes/auth'));
+app.use('/auth', authRoutes);
 
 // Test database connection and start server
 sequelize
