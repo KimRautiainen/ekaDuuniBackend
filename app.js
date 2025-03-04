@@ -6,6 +6,7 @@ const sequelize = require('./config/database'); // Import Sequelize instance
 require('./config/passport'); // Import passport configuration
 const app = express();
 const authRoutes = require('./routes/auth');
+const profileRoutes = require('./routes/profileRoute');
 
 // Middleware configurations
 app.use(express.json());
@@ -23,6 +24,10 @@ app.use(passport.session());
 // Define routes
 app.use('/auth', authRoutes);
 
+// Define profile routes
+app.use('/profile', profileRoutes);
+
+
 // Test database connection and start server
 sequelize
   .authenticate()
@@ -34,6 +39,6 @@ sequelize
     });
   })
   .catch((err) => {
-    console.error('Yhteyden muodostaminen epäonnistui:', err);
+    console.error('Yhteyden muodostaminen epäonnistui:', err + err.message);
     process.exit(1); // Exit the process with failure
   });
