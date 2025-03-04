@@ -27,7 +27,13 @@ app.use('/auth', authRoutes);
 // Define profile routes
 app.use('/profile', profileRoutes);
 
-
+// console log environment variables
+console.log(process.env.DB_USER);
+console.log(process.env.DB_PASS);
+console.log(process.env.DB_NAME);
+console.log(process.env.DB_HOST);
+console.log(process.env.DB_DIALECT);
+console.log(process.env.DB_PORT);
 // Test database connection and start server
 sequelize
   .authenticate()
