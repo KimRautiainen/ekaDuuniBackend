@@ -15,7 +15,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    // cookie: { secure: true }, // Set 'secure' to true if using HTTPS
+    cookie: { secure: true }, // Set 'secure' to true if using HTTPS
   })
 );
 app.use(passport.initialize());
