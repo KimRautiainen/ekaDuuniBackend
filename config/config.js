@@ -6,13 +6,8 @@ module.exports = {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: 'mssql',
-    dialectOptions: {
-      options: {
-        encrypt: true,
-        enableArithAbort: true,
-      },
-    },
+    port: process.env.DB_PORT,
+    dialect: 'mysql',
   },
   production: {
     username: process.env.DB_USER,
