@@ -27,6 +27,7 @@
     "@sequelize/mssql": "^7.0.0-alpha.45",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",

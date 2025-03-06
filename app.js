@@ -8,6 +8,7 @@ require('./config/passport'); // Import passport configuration
 const app = express();
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profileRoute');
+const cors = require('cors');
 
 // Middleware configurations
 app.use(express.json());
@@ -22,6 +23,17 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+const allowedOrigins = [
+  'http://localhost:5173', // Development frontend
+  'https://ekaduunibackend.onrender.com', // ✅ Only allow real frontend in production
+];
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true, // Allow cookies if needed
+  })
+);
 
 // Define routes
 app.use('/auth', authRoutes);
