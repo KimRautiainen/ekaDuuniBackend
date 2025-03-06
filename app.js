@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 const sequelize = require('./config/database'); // Import Sequelize instance
 require('./config/passport'); // Import passport configuration
 const app = express();
@@ -10,11 +11,12 @@ const profileRoutes = require('./routes/profileRoute');
 
 // Middleware configurations
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: { secure: true }, // Set 'secure' to true if using HTTPS
   })
 );

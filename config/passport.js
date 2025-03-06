@@ -2,6 +2,9 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
+const passportJWT = require('passport-jwt');
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 const bcrypt = require('bcryptjs');
 const { User } = require('../models'); // Import the User model from the models directory
 
@@ -59,6 +62,28 @@ passport.use(
           return done(null, false, { message: 'Incorrect password' });
         }
 
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
+      }
+    }
+  )
+);
+
+// 🔹 JWT Strategy (Token-Based Authentication)
+passport.use(
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
+    },
+    async (jwtPayload, done) => {
+      console.log('Decoded JWT Payload:', jwtPayload); // 👀 Debugging
+      try {
+        const user = await User.findByPk(jwtPayload.id);
+        if (!user) {
+          return done(null, false); // User not found
+        }
         return done(null, user);
       } catch (error) {
         return done(error, null);
