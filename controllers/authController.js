@@ -33,8 +33,16 @@ exports.register = async (req, res) => {
 // 🔹 LOGIN A USER (LOCAL STRATEGY)
 exports.login = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) return res.status(500).json({ message: 'Server error', err });
-    if (!user) return res.status(400).json({ message: info.message });
+    if (err) {
+      console.error('❌ Passport Authentication Error:', err);
+      return res
+        .status(500)
+        .json({ message: 'Server error', error: err.message });
+    }
+    if (!user) {
+      console.warn('⚠️ Login failed:', info);
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
 
     // Generate JWT Token
     const token = jwt.sign(
