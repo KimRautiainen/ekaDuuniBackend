@@ -1,15 +1,31 @@
 const express = require('express');
-const router = express.Router();
+const passport = require('passport');
+const upload = require('../middlewares/upload'); // Import Multer middleware
 const profileController = require('../controllers/profileController');
-const authenticateUser = require('../middlewares/authMiddleware');
+
+const router = express.Router();
 
 // Get profile
-router.get('/', profileController.getProfile);
+router.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  profileController.getProfile
+);
 
-// Create profile (Protected route)
-router.post('/', authenticateUser, profileController.createProfile);
+// Create profile with image upload
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  upload.single('profile_picture'),
+  profileController.createProfile
+);
 
-// Update profile (Protected route)
-router.patch('/', authenticateUser, profileController.updateProfile);
+// Update profile with image upload
+router.patch(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  upload.single('profile_picture'),
+  profileController.updateProfile
+);
 
 module.exports = router;
