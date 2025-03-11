@@ -35,9 +35,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'ProjectMedia',
-      tableName: 'project_media',
+      tableName: 'projectmedia',
       timestamps: true,
-      underscored: true,
+      underscored: false,
     }
   );
 

@@ -8,6 +8,7 @@ require('./config/passport'); // Import passport configuration
 const app = express();
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profileRoute');
+const projectRoutes = require('./routes/projectsRoute');
 const cors = require('cors');
 
 // Middleware configurations
@@ -40,6 +41,9 @@ app.use('/auth', authRoutes);
 
 // Define profile routes
 app.use('/profile', profileRoutes);
+
+// Define project routes
+app.use('/projects', projectRoutes);
 
 // Test database connection and start server
 sequelize
