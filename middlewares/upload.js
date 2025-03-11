@@ -1,19 +1,44 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-// Set storage engine
-const storage = multer.diskStorage({
+// Ensure upload directories exist
+const createUploadDir = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
+
+// ✅ Profile picture storage
+const profileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Uploads will be stored in the 'uploads' folder
+    const uploadPath = 'uploads/profiles/';
+    createUploadDir(uploadPath);
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     cb(null, `profile_${req.user.id}${path.extname(file.originalname)}`);
   },
 });
 
-// File filter: Allow only images (jpeg, png, jpg)
+// ✅ Project media storage (handles multiple images/videos)
+const projectMediaStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'uploads/projects/';
+    createUploadDir(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      `project_${req.user.id}_${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+
+// ✅ File filter: Allow images & videos
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png/;
+  const allowedTypes = /jpeg|jpg|png|gif|mp4|mov|avi|mkv/;
   const extname = allowedTypes.test(
     path.extname(file.originalname).toLowerCase()
   );
@@ -22,15 +47,29 @@ const fileFilter = (req, file, cb) => {
   if (extname && mimetype) {
     return cb(null, true);
   } else {
-    return cb(new Error('Only images (jpeg, jpg, png) are allowed!'), false);
+    return cb(
+      new Error(
+        'Only images (jpeg, jpg, png, gif) and videos (mp4, mov, avi, mkv) are allowed!'
+      ),
+      false
+    );
   }
 };
 
-// Multer upload middleware
-const upload = multer({
-  storage: storage,
+// ✅ Multer configurations
+const uploadProfilePicture = multer({
+  storage: profileStorage,
   fileFilter: fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max file size
 });
 
-module.exports = upload;
+const uploadProjectMedia = multer({
+  storage: projectMediaStorage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max file size for videos/images
+});
+
+module.exports = {
+  uploadProfilePicture,
+  uploadProjectMedia,
+};

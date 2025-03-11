@@ -21,14 +21,14 @@ router.get(
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  upload.single('project_media'),
+  upload.uploadProjectMedia.array('project_media', 5), // allow up to 5 files
   projectsController.createProject
 );
 // update a project
 router.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  upload.single('project_media'),
+  upload.uploadProjectMedia.array('project_media', 5), // allow up to 5 files
   projectsController.updateProject
 );
 // delete a project

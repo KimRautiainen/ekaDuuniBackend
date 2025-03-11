@@ -12,19 +12,36 @@ const getProjects = async (req, res) => {
   try {
     const projects = await Project.findAll({
       where: { user_id: req.user.id },
-      include: [
-        { model: ProjectMedia, attributes: ['media_url', 'media_type'] }, // Include media
-        { model: Skill, through: { attributes: [] }, attributes: ['name'] }, // Include skills
+      attributes: [
+        'id',
+        'user_id',
+        'name',
+        'description',
+        'github_link',
+        'live_demo',
+        'start_date',
+        'end_date',
+        'createdAt',
+        'updatedAt',
       ],
-      order: [['createdAt', 'DESC']], // Order by newest projects first
+      include: [
+        {
+          model: ProjectMedia,
+          attributes: ['id', 'media_url', 'media_type'],
+        },
+        {
+          model: Skill,
+          attributes: ['id', 'name'],
+        },
+      ],
+      order: [['createdAt', 'DESC']], // ✅ Use camelCase
     });
 
-    // If no projects found
-    if (projects.length === 0) {
+    if (!projects.length) {
       return res.status(404).json({ message: 'No projects found' });
     }
 
-    res.status(200).json({ projects }); // Send projects
+    res.json({ projects });
   } catch (error) {
     console.error('Get Projects Error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -76,6 +93,15 @@ const createProject = async (req, res) => {
     } = req.body; // Extract fields from request body
     const userId = req.user.id; // Get logged-in user ID
 
+    console.log('Received skills:', skills); // Debugging
+
+    // Ensure skills is always an array
+    const skillsArray = Array.isArray(skills)
+      ? skills
+      : skills
+        ? JSON.parse(skills)
+        : [];
+
     // Create new project
     const project = await Project.create(
       {
@@ -102,9 +128,9 @@ const createProject = async (req, res) => {
     }
 
     // Handle project skills (Auto-create skills if they don't exist)
-    if (skills && skills.length > 0) {
+    if (skillsArray.length > 0) {
       const skillRecords = await Promise.all(
-        skills.map(async (skillName) => {
+        skillsArray.map(async (skillName) => {
           // Find or create each skill
           const [skill] = await Skill.findOrCreate({
             where: { name: skillName },
@@ -132,6 +158,7 @@ const createProject = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 // 🔹 UPDATE A PROJECT
 const updateProject = async (req, res) => {
   try {

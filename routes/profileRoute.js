@@ -16,7 +16,7 @@ router.get(
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  upload.single('profile_picture'),
+  upload.uploadProfilePicture.single('profile_picture'),
   profileController.createProfile
 );
 
@@ -24,7 +24,7 @@ router.post(
 router.patch(
   '/',
   passport.authenticate('jwt', { session: false }),
-  upload.single('profile_picture'),
+  upload.uploadProfilePicture.single('profile_picture'),
   profileController.updateProfile
 );
 
