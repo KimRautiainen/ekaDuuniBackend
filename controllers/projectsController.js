@@ -141,7 +141,7 @@ const createProject = async (req, res) => {
         })
       );
 
-      // Insert into ProjectSkill table
+      
       const projectSkills = skillRecords.map((skill) => ({
         project_id: project.id,
         skill_id: skill.id,
