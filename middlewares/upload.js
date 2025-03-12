@@ -9,6 +9,21 @@ const createUploadDir = (dir) => {
   }
 };
 
+// ✅ Job media storage configuration
+const jobMediaStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = 'uploads/jobs/';
+    createUploadDir(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      `job_${req.params.id}_${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+
 // ✅ Profile picture storage
 const profileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -69,7 +84,14 @@ const uploadProjectMedia = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max file size for videos/images
 });
 
+
+const uploadJobMedia = multer({
+  storage: jobMediaStorage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max file size
+});
 module.exports = {
   uploadProfilePicture,
   uploadProjectMedia,
+  uploadJobMedia,
 };
