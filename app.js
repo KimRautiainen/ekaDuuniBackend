@@ -9,6 +9,7 @@ const app = express();
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profileRoute');
 const projectRoutes = require('./routes/projectsRoute');
+const jobRoutes = require('./routes/jobRoute');
 const cors = require('cors');
 
 // Middleware configurations
@@ -44,6 +45,9 @@ app.use('/profile', profileRoutes);
 
 // Define project routes
 app.use('/projects', projectRoutes);
+
+// Define job routes
+app.use('/jobs', jobRoutes);
 
 // Test database connection and start server
 sequelize
