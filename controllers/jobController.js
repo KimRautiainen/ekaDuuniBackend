@@ -137,7 +137,9 @@ const createJob = async (req, res) => {
       await JobSkill.bulkCreate(jobSkills, { transaction }); // insert into jobskills table
     }
     await transaction.commit(); // commit transaction
-    res.status(201).json({ message: 'Job created succesfully', job });
+    res
+      .status(201)
+      .json({ message: 'Job created succesfully', job, skills: skillsArray });
   } catch (error) {
     await transaction.rollback(); // Rollback if anything fails
     console.error('Create Job Error:', error);
