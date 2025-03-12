@@ -34,14 +34,25 @@ const getJobs = async (req, res) => {
           attributes: ['name'],
         },
       ],
-      order: [['createdAt', 'DESC']], // ✅ Use camelCase
+      order: [['createdAt', 'DESC']],
     });
 
     if (!jobs.length) {
       return res.status(404).json({ message: 'No jobs found' });
     }
 
-    res.json({ jobs });
+    // ✅ Ensure images have full URLs
+    const updatedJobs = jobs.map((job) => ({
+      ...job.toJSON(),
+      poster_image: job.poster_image
+        ? `${req.protocol}://${req.get('host')}/uploads/jobs/${job.poster_image}`
+        : null,
+      logo: job.logo
+        ? `${req.protocol}://${req.get('host')}/uploads/jobs/${job.logo}`
+        : null,
+    }));
+
+    res.json({ jobs: updatedJobs });
   } catch (error) {
     console.error('Get Jobs Error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -56,8 +67,6 @@ const createJob = async (req, res) => {
     const {
       title,
       company,
-      logo,
-      poster_image,
       apply_type,
       job_description,
       location,
@@ -87,8 +96,6 @@ const createJob = async (req, res) => {
         employer_id: employer_id,
         title,
         company,
-        logo,
-        poster_image,
         apply_type,
         job_description,
         location,
@@ -100,6 +107,10 @@ const createJob = async (req, res) => {
         max_salary,
         salary_type,
         salary_details,
+        poster_image: req.files?.poster_image
+          ? req.files.poster_image[0].filename
+          : null,
+        logo: req.files?.logo ? req.files.logo[0].filename : null,
       },
       { transaction }
     );

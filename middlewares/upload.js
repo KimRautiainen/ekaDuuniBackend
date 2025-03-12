@@ -17,10 +17,7 @@ const jobMediaStorage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(
-      null,
-      `job_${req.params.id}_${Date.now()}${path.extname(file.originalname)}`
-    );
+    cb(null, `job_${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
@@ -83,7 +80,6 @@ const uploadProjectMedia = multer({
   fileFilter: fileFilter,
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max file size for videos/images
 });
-
 
 const uploadJobMedia = multer({
   storage: jobMediaStorage,
