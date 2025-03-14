@@ -1,8 +1,9 @@
 const path = require('path');
 const fs = require('fs');
 const { uploadJobMedia } = require('../middlewares/upload');
-const { Job, JobSkill, Skill } = require('../models');
+const { Job, JobSkill, Skill, Application } = require('../models');
 const { Sequelize } = require('sequelize');
+const { getImageUrl } = require('../utils/imageHelper');
 
 // GET ALL JOBS
 const getJobs = async (req, res) => {
@@ -43,15 +44,10 @@ const getJobs = async (req, res) => {
       return res.status(404).json({ message: 'No jobs found' });
     }
 
-    // ✅ Ensure images have full URLs
     const updatedJobs = jobs.map((job) => ({
       ...job.toJSON(),
-      poster_image: job.poster_image
-        ? `${req.protocol}://${req.get('host')}/uploads/jobs/${job.poster_image}`
-        : null,
-      logo: job.logo
-        ? `${req.protocol}://${req.get('host')}/uploads/jobs/${job.logo}`
-        : null,
+      poster_image: getImageUrl(req, 'jobs', job.poster_image),
+      logo: getImageUrl(req, 'jobs', job.logo),
     }));
 
     res.json({ jobs: updatedJobs });
@@ -286,7 +282,11 @@ const getJobById = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    res.json({ job });
+    res.json({
+      ...job.toJSON(),
+      poster_image: getImageUrl(req, 'jobs', job.poster_image),
+      logo: getImageUrl(req, 'jobs', job.logo),
+    });
   } catch (error) {
     console.error('Get Job By ID Error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -323,8 +323,13 @@ const deleteJob = async (req, res) => {
 
 const getJobsByEmployer = async (req, res) => {
   try {
+    const { employerId } = req.params;
+    if (!employerId) {
+      return res.status(400).json({ message: 'Employer ID is required' });
+    }
+
     const jobs = await Job.findAll({
-      where: { employer_id: req.params.employer_id },
+      where: { employer_id: employerId },
       attributes: [
         'id',
         'title',
@@ -361,7 +366,13 @@ const getJobsByEmployer = async (req, res) => {
         .json({ message: 'No jobs found for this employer' });
     }
 
-    res.json({ jobs });
+    const updatedJobs = jobs.map((job) => ({
+      ...job.toJSON(),
+      poster_image: getImageUrl(req, 'jobs', job.poster_image),
+      logo: getImageUrl(req, 'jobs', job.logo),
+    }));
+
+    res.json({ jobs: updatedJobs });
   } catch (error) {
     console.error('Get Jobs By Employer Error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -377,19 +388,30 @@ const searchJobs = async (req, res) => {
       employment_type,
       min_salary,
       max_salary,
+      skills,
     } = req.query;
 
     const whereConditions = {};
 
-    if (title) whereConditions.title = { [Sequelize.Op.iLike]: `%${title}%` };
+    if (title) whereConditions.title = { [Sequelize.Op.like]: `%${title}%` };
     if (location)
-      whereConditions.location = { [Sequelize.Op.iLike]: `%${location}%` };
+      whereConditions.location = { [Sequelize.Op.like]: `%${location}%` };
     if (work_type) whereConditions.work_type = work_type;
     if (employment_type) whereConditions.employment_type = employment_type;
     if (min_salary)
-      whereConditions.min_salary = { [Sequelize.Op.gte]: min_salary };
+      whereConditions.min_salary = { [Sequelize.Op.gte]: Number(min_salary) };
     if (max_salary)
-      whereConditions.max_salary = { [Sequelize.Op.lte]: max_salary };
+      whereConditions.max_salary = { [Sequelize.Op.lte]: Number(max_salary) };
+
+    console.log('Search Conditions:', whereConditions);
+
+    const skillConditions = skills
+      ? skills
+          .split(',')
+          .map((skill) => ({
+            name: { [Sequelize.Op.like]: `%${skill.trim()}%` },
+          }))
+      : [];
 
     const jobs = await Job.findAll({
       where: whereConditions,
@@ -418,18 +440,29 @@ const searchJobs = async (req, res) => {
           model: Skill,
           through: { attributes: [] },
           attributes: ['name'],
+          where:
+            skillConditions.length > 0
+              ? { [Sequelize.Op.or]: skillConditions }
+              : undefined,
         },
       ],
       order: [['createdAt', 'DESC']],
     });
 
     if (!jobs.length) {
+      console.log('No jobs found matching:', whereConditions);
       return res
         .status(404)
         .json({ message: 'No jobs found matching criteria' });
     }
 
-    res.json({ jobs });
+    const updatedJobs = jobs.map((job) => ({
+      ...job.toJSON(),
+      poster_image: getImageUrl(req, 'jobs', job.poster_image),
+      logo: getImageUrl(req, 'jobs', job.logo),
+    }));
+
+    res.json({ jobs: updatedJobs });
   } catch (error) {
     console.error('Search Jobs Error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

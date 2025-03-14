@@ -11,6 +11,7 @@ const profileRoutes = require('./routes/profileRoute');
 const projectRoutes = require('./routes/projectsRoute');
 const jobRoutes = require('./routes/jobRoute');
 const cors = require('cors');
+const path = require('path');
 
 // Middleware configurations
 app.use(express.json());
@@ -36,6 +37,10 @@ app.use(
     credentials: true, // Allow cookies if needed
   })
 );
+
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // Define routes
 app.use('/auth', authRoutes);
