@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profileRoute');
 const projectRoutes = require('./routes/projectsRoute');
 const jobRoutes = require('./routes/jobRoute');
+const savedJobsRoutes = require('./routes/savedJobsRoute');
 const userRoutes = require('./routes/userRoute');
 const cors = require('cors');
 const path = require('path');
@@ -55,6 +56,9 @@ app.use('/projects', projectRoutes);
 
 // Define job routes
 app.use('/jobs', jobRoutes);
+
+// Define saved jobs routes
+app.use('/saved-jobs', savedJobsRoutes);
 
 // Define user routes
 app.use('/users', userRoutes);
