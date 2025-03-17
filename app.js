@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profileRoute');
 const projectRoutes = require('./routes/projectsRoute');
 const jobRoutes = require('./routes/jobRoute');
+const userRoutes = require('./routes/userRoute');
 const cors = require('cors');
 const path = require('path');
 
@@ -41,8 +42,9 @@ app.use(
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// -- DEFINE ROUTES -- //
 
-// Define routes
+// Define auth routes
 app.use('/auth', authRoutes);
 
 // Define profile routes
@@ -53,6 +55,9 @@ app.use('/projects', projectRoutes);
 
 // Define job routes
 app.use('/jobs', jobRoutes);
+
+// Define user routes
+app.use('/users', userRoutes);
 
 // Test database connection and start server
 sequelize
