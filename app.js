@@ -8,7 +8,12 @@ require('./config/passport'); // Import passport configuration
 const app = express();
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profileRoute');
+const projectRoutes = require('./routes/projectsRoute');
+const jobRoutes = require('./routes/jobRoute');
+const savedJobsRoutes = require('./routes/savedJobsRoute');
+const userRoutes = require('./routes/userRoute');
 const cors = require('cors');
+const path = require('path');
 
 // Middleware configurations
 app.use(express.json());
@@ -35,11 +40,28 @@ app.use(
   })
 );
 
-// Define routes
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// -- DEFINE ROUTES -- //
+
+// Define auth routes
 app.use('/auth', authRoutes);
 
 // Define profile routes
 app.use('/profile', profileRoutes);
+
+// Define project routes
+app.use('/projects', projectRoutes);
+
+// Define job routes
+app.use('/jobs', jobRoutes);
+
+// Define saved jobs routes
+app.use('/saved-jobs', savedJobsRoutes);
+
+// Define user routes
+app.use('/users', userRoutes);
 
 // Test database connection and start server
 sequelize
