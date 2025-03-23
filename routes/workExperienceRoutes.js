@@ -19,4 +19,11 @@ router.post(
   workExperienceController.createWorkExperience
 );
 
+// Get work experiences by specific user ID
+router.get(
+  '/user/:userId',
+  passport.authenticate('jwt', { session: false }),
+  workExperienceController.getWorkExperiencesByUserId
+);
+
 module.exports = router;

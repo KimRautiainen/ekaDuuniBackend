@@ -55,7 +55,29 @@ const getMyWorkExperiences = async (req, res) => {
   }
 };
 
+// GET all work experiences by user ID (parameter)
+const getWorkExperiencesByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const experiences = await WorkExperience.findAll({
+      where: { user_id: userId },
+      order: [['start_date', 'DESC']],
+    });
+
+    if (!experiences.length) {
+      return res.status(404).json({ message: 'No work experiences found for this user' });
+    }
+
+    res.json({ experiences });
+  } catch (error) {
+    console.error('Get Work Experiences By User ID Error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   createWorkExperience,
   getMyWorkExperiences,
+  getWorkExperiencesByUserId,
 };
