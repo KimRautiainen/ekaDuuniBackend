@@ -41,8 +41,8 @@ passport.use(
         // If an error occurs, pass it to the done function
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // 🔹 LOCAL STRATEGY (Email & Password)
@@ -66,8 +66,8 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // 🔹 JWT Strategy (Token-Based Authentication)

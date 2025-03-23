@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
           'reviewed',
           'interview',
           'rejected',
-          'accepted'
+          'accepted',
         ),
         allowNull: false,
         defaultValue: 'pending',
@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'applications',
       timestamps: true,
       underscored: true,
-    }
+    },
   );
 
   return Application;

@@ -12,6 +12,7 @@ const projectRoutes = require('./routes/projectsRoute');
 const jobRoutes = require('./routes/jobRoute');
 const savedJobsRoutes = require('./routes/savedJobsRoute');
 const userRoutes = require('./routes/userRoute');
+const workExperienceRoutes = require('./routes/workExperienceRoutes');
 const cors = require('cors');
 const path = require('path');
 
@@ -62,6 +63,9 @@ app.use('/saved-jobs', savedJobsRoutes);
 
 // Define user routes
 app.use('/users', userRoutes);
+
+// Define work experience routes
+app.use('/work-experiences', workExperienceRoutes);
 
 // Test database connection and start server
 sequelize
