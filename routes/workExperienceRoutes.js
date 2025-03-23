@@ -26,4 +26,11 @@ router.get(
   workExperienceController.getWorkExperiencesByUserId
 );
 
+// DELETE work experience by ID (only own)
+router.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  workExperienceController.deleteWorkExperience
+);
+
 module.exports = router;
