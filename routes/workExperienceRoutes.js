@@ -33,4 +33,11 @@ router.delete(
   workExperienceController.deleteWorkExperience
 );
 
+// PATCH (update) work experience by ID
+router.patch(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  workExperienceController.updateWorkExperience
+);
+
 module.exports = router;

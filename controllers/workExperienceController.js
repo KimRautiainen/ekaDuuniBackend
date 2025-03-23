@@ -98,11 +98,48 @@ const deleteWorkExperience = async (req, res) => {
   }
 };
 
+const updateWorkExperience = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
 
+    const experience = await WorkExperience.findOne({
+      where: { id, user_id: userId },
+    });
+
+    if (!experience) {
+      return res.status(404).json({ message: 'Work experience not found or not yours' });
+    }
+
+    const {
+      company,
+      position,
+      location,
+      start_date,
+      end_date,
+      description,
+    } = req.body;
+
+    await experience.update({
+      company,
+      position,
+      location,
+      start_date,
+      end_date,
+      description,
+    });
+
+    res.json({ message: 'Work experience updated successfully', experience });
+  } catch (error) {
+    console.error('Update Work Experience Error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
 
 module.exports = {
   createWorkExperience,
   getMyWorkExperiences,
   getWorkExperiencesByUserId,
   deleteWorkExperience,
+  updateWorkExperience,
 };
