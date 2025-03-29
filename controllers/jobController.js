@@ -4,6 +4,11 @@ const { uploadJobMedia } = require('../middlewares/upload');
 const { Job, JobSkill, Skill, Application } = require('../models');
 const { Sequelize } = require('sequelize');
 const { getImageUrl } = require('../utils/imageHelper');
+const createDOMPurify = require('isomorphic-dompurify');
+const { JSDOM } = require('jsdom');
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 // GET ALL JOBS
 const getJobs = async (req, res) => {
@@ -79,6 +84,28 @@ const createJob = async (req, res) => {
       skills,
     } = req.body;
     const employer_id = req.user.id; // Get employer ID from authenticated user
+    // ✅ Sanitize job_description before saving
+    const sanitizedDescription = DOMPurify.sanitize(job_description, {
+      ALLOWED_TAGS: [
+        'b',
+        'i',
+        'u',
+        'strong',
+        'em',
+        'p',
+        'ul',
+        'ol',
+        'li',
+        'a',
+        'h1',
+        'h2',
+        'h3',
+        'br',
+        'hr',
+        'blockquote',
+      ],
+      ALLOWED_ATTR: ['href', 'target'],
+    });
 
     console.log('Received skills:', skills); // Debugging
 
@@ -89,13 +116,16 @@ const createJob = async (req, res) => {
         ? JSON.parse(skills)
         : [];
 
+    console.log('Raw HTML:', job_description);
+    console.log('Sanitized HTML:', sanitizedDescription);
+
     const job = await Job.create(
       {
         employer_id: employer_id,
         title,
         company,
         apply_type,
-        job_description,
+        job_description: sanitizedDescription,
         location,
         start_date,
         end_date,
@@ -181,6 +211,29 @@ const updateJob = async (req, res) => {
       skills,
     } = req.body;
 
+    // ✅ Sanitize job_description
+    const sanitizedDescription = DOMPurify.sanitize(job_description, {
+      ALLOWED_TAGS: [
+        'b',
+        'i',
+        'u',
+        'strong',
+        'em',
+        'p',
+        'ul',
+        'ol',
+        'li',
+        'a',
+        'h1',
+        'h2',
+        'h3',
+        'br',
+        'hr',
+        'blockquote',
+      ],
+      ALLOWED_ATTR: ['href', 'target'],
+    });
+
     let skillsArray = [];
     if (typeof skills === 'string') {
       try {
@@ -194,11 +247,14 @@ const updateJob = async (req, res) => {
       }
     }
 
+    console.log('Raw HTML:', job_description);
+    console.log('Sanitized HTML:', sanitizedDescription);
+
     const updatedJobData = {
       title,
       company,
       apply_type,
-      job_description,
+      job_description: sanitizedDescription,
       location,
       start_date,
       end_date,
@@ -406,11 +462,9 @@ const searchJobs = async (req, res) => {
     console.log('Search Conditions:', whereConditions);
 
     const skillConditions = skills
-      ? skills
-          .split(',')
-          .map((skill) => ({
-            name: { [Sequelize.Op.like]: `%${skill.trim()}%` },
-          }))
+      ? skills.split(',').map((skill) => ({
+          name: { [Sequelize.Op.like]: `%${skill.trim()}%` },
+        }))
       : [];
 
     const jobs = await Job.findAll({
