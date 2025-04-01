@@ -21,27 +21,29 @@ const getProfile = async (req, res) => {
   }
 };
 
-// 🔹 CREATE PROFILE (With Image Upload Handling)
+// 🔹 CREATE PROFILE (With Profile Picture & Cover Photo Upload)
 const createProfile = async (req, res) => {
   try {
     const { bio, location, phone_number, linkedin, github, portfolio } =
       req.body;
     const userId = req.user.id;
 
-    // Find existing profile
-    let profile = await Profile.findOne({ where: { user_id: userId } });
-
-    if (profile) {
+    // Prevent duplicate profile
+    const existingProfile = await Profile.findOne({
+      where: { user_id: userId },
+    });
+    if (existingProfile) {
       return res
         .status(400)
         .json({ message: 'Profile already exists. Use update instead.' });
     }
 
-    // Handle profile picture upload
-    const profilePicture = req.file ? req.file.filename : null;
+    // Handle image uploads from req.files
+    const profilePicture = req.files?.profile_picture?.[0]?.filename || null;
+    const coverPhoto = req.files?.cover_photo?.[0]?.filename || null;
 
-    // Create new profile
-    profile = await Profile.create({
+    // Create profile
+    const profile = await Profile.create({
       user_id: userId,
       bio,
       location,
@@ -50,6 +52,7 @@ const createProfile = async (req, res) => {
       github,
       portfolio,
       profile_picture: profilePicture,
+      cover_photo: coverPhoto,
     });
 
     res.status(201).json({ message: 'Profile created successfully', profile });
@@ -58,39 +61,52 @@ const createProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
-// 🔹 UPDATE PROFILE (With Profile Picture Replacement)
+// 🔹 UPDATE PROFILE (With Image Replacement)
 const updateProfile = async (req, res) => {
   try {
     const { bio, location, phone_number, linkedin, github, portfolio } =
       req.body;
     const userId = req.user.id;
 
-    // Find the profile
     const profile = await Profile.findOne({ where: { user_id: userId } });
-
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' });
     }
 
-    // Handle profile picture update
-    if (req.file) {
-      // Delete the old profile picture if exists
+    // 🔁 Replace profile picture if provided
+    const newProfilePic = req.files?.profile_picture?.[0]?.filename;
+    if (newProfilePic) {
       if (profile.profile_picture) {
-        const oldPicPath = path.join(
+        const oldPath = path.join(
           __dirname,
           '..',
           'uploads',
+          'profiles',
           profile.profile_picture
         );
-        if (fs.existsSync(oldPicPath)) {
-          fs.unlinkSync(oldPicPath); // Delete the old picture
-        }
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
-      profile.profile_picture = req.file.filename; // Save new image
+      profile.profile_picture = newProfilePic;
     }
 
-    // Only update fields that are provided in the request
+    // 🔁 Replace cover photo if provided
+    const newCoverPhoto = req.files?.cover_photo?.[0]?.filename;
+    if (newCoverPhoto) {
+      if (profile.cover_photo) {
+        const oldCoverPath = path.join(
+          __dirname,
+          '..',
+          'uploads',
+          'profiles',
+          'cover_photos',
+          profile.cover_photo
+        );
+        if (fs.existsSync(oldCoverPath)) fs.unlinkSync(oldCoverPath);
+      }
+      profile.cover_photo = newCoverPhoto;
+    }
+
+    // Update text fields if present
     if (bio !== undefined) profile.bio = bio;
     if (location !== undefined) profile.location = location;
     if (phone_number !== undefined) profile.phone_number = phone_number;
@@ -98,7 +114,6 @@ const updateProfile = async (req, res) => {
     if (github !== undefined) profile.github = github;
     if (portfolio !== undefined) profile.portfolio = portfolio;
 
-    // Save updated profile
     await profile.save();
     res.json({ message: 'Profile updated successfully', profile });
   } catch (error) {
