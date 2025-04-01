@@ -4,8 +4,6 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Profile extends Model {
     static associate(models) {
-      // -- Define association -- //
-
       // A Profile belongs to a User
       Profile.belongsTo(models.User, {
         foreignKey: 'user_id',
@@ -13,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   Profile.init(
     {
       user_id: {
@@ -45,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       profile_picture: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      cover_photo: {
         type: DataTypes.STRING,
         allowNull: true,
       },
