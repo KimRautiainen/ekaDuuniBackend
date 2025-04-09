@@ -2,10 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const { Profile } = require('../models');
 
+const { getImageUrl } = require('../utils/imageHelper');
+
 // GET PROFILE
 const getProfile = async (req, res) => {
   try {
-    console.log('req.user:', req.user);
     const profile = await Profile.findOne({
       where: { user_id: req.user.id },
     });
@@ -14,7 +15,21 @@ const getProfile = async (req, res) => {
       return res.status(404).json({ message: 'Profile not found' });
     }
 
-    res.json({ profile });
+    const profileData = profile.toJSON();
+
+    // Use your helper to construct full image URLs
+    profileData.profile_picture = getImageUrl(
+      req,
+      'profiles',
+      profileData.profile_picture
+    );
+    profileData.cover_photo = getImageUrl(
+      req,
+      'profiles/cover_photos',
+      profileData.cover_photo
+    );
+
+    res.json({ profile: profileData });
   } catch (error) {
     console.error('Get Profile Error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
