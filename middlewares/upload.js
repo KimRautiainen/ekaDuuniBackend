@@ -90,13 +90,13 @@ const uploadProfilePicture = multer({
 const uploadCoverPhoto = multer({
   storage: coverPhotoStorage,
   fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  limits: { fileSize: 20 * 1024 * 1024 }, // 5MB max
 });
 
 const uploadProjectMedia = multer({
   storage: projectMediaStorage,
   fileFilter: fileFilter,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max file size for videos/images
+  limits: { fileSize: 200 * 1024 * 1024 }, // 20MB max file size for videos/images
 });
 
 const uploadJobMedia = multer({
@@ -133,7 +133,7 @@ const uploadProfileAssets = multer({
     },
   }),
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  limits: { fileSize: 20 * 1024 * 1024 }, // 5MB max
 });
 
 module.exports = {
