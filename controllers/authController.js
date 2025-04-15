@@ -6,11 +6,7 @@ require('dotenv').config();
 
 // Utility function to generate JWT Token
 const generateToken = (user) => {
-  return jwt.sign(
-    { id: user.id, email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' } // Token expires in 1 hour
-  );
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
 };
 
 // 🔹 REGISTER A NEW USER
