@@ -5,12 +5,6 @@ const profileController = require('../controllers/profileController');
 
 const router = express.Router();
 
-// Combined upload middleware for profile picture & cover photo
-const uploadProfileAssets = upload.uploadProfileAssets.fields([
-  { name: 'profile_picture', maxCount: 1 },
-  { name: 'cover_photo', maxCount: 1 },
-]);
-
 // Get profile
 router.get(
   '/',
@@ -22,7 +16,7 @@ router.get(
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  uploadProfileAssets,
+  upload.uploadProfileAssets,
   profileController.createProfile
 );
 
@@ -30,7 +24,7 @@ router.post(
 router.patch(
   '/',
   passport.authenticate('jwt', { session: false }),
-  uploadProfileAssets,
+  upload.uploadProfileAssets,
   profileController.updateProfile
 );
 

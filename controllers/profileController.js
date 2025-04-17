@@ -106,6 +106,7 @@ const updateProfile = async (req, res) => {
 
     // 🔁 Replace cover photo if provided
     const newCoverPhoto = req.files?.cover_photo?.[0]?.filename;
+
     if (newCoverPhoto) {
       if (profile.cover_photo) {
         const oldCoverPath = path.join(
@@ -130,6 +131,10 @@ const updateProfile = async (req, res) => {
     if (portfolio !== undefined) profile.portfolio = portfolio;
 
     await profile.save();
+    console.log('Profile saved with:', {
+      profile_picture: profile.profile_picture,
+      cover_photo: profile.cover_photo,
+    });
     res.json({ message: 'Profile updated successfully', profile });
   } catch (error) {
     console.error('Update Profile Error:', error);

@@ -90,7 +90,7 @@ const uploadProfilePicture = multer({
 const uploadCoverPhoto = multer({
   storage: coverPhotoStorage,
   fileFilter: fileFilter,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 5MB max
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max
 });
 
 const uploadProjectMedia = multer({
@@ -105,36 +105,42 @@ const uploadJobMedia = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB max file size
 });
 
-// ✅ Combined profile asset upload (profile picture + cover photo)
-const uploadProfileAssets = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      let uploadPath;
-      if (file.fieldname === 'profile_picture') {
-        uploadPath = 'uploads/profiles/';
-      } else if (file.fieldname === 'cover_photo') {
-        uploadPath = 'uploads/profiles/cover_photos/';
-      } else {
-        return cb(new Error('Invalid file field'), false);
-      }
+// Combined multer instance (do not pass diskStorage here directly)
+const combinedProfileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let uploadPath;
+    if (file.fieldname === 'profile_picture') {
+      uploadPath = 'uploads/profiles/';
+    } else if (file.fieldname === 'cover_photo') {
+      uploadPath = 'uploads/profiles/cover_photos/';
+    } else {
+      return cb(new Error('Invalid file field'), false);
+    }
 
-      createUploadDir(uploadPath);
-      cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      if (file.fieldname === 'profile_picture') {
-        cb(null, `profile_${req.user.id}${ext}`);
-      } else if (file.fieldname === 'cover_photo') {
-        cb(null, `cover_${req.user.id}${ext}`);
-      } else {
-        cb(new Error('Invalid file field'), false);
-      }
-    },
-  }),
-  fileFilter,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 5MB max
+    createUploadDir(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    if (file.fieldname === 'profile_picture') {
+      cb(null, `profile_${req.user.id}_${Date.now()}${ext}`);
+    } else if (file.fieldname === 'cover_photo') {
+      cb(null, `cover_${req.user.id}_${Date.now()}${ext}`);
+    } else {
+      cb(new Error('Invalid file field'), false);
+    }
+  },
 });
+
+// ✅ Combined uploadProfileAssets with fields already applied
+const uploadProfileAssets = multer({
+  storage: combinedProfileStorage,
+  fileFilter,
+  limits: { fileSize: 20 * 1024 * 1024 },
+}).fields([
+  { name: 'profile_picture', maxCount: 1 },
+  { name: 'cover_photo', maxCount: 1 },
+]);
 
 module.exports = {
   uploadProfilePicture,
