@@ -33,7 +33,7 @@ app.use(passport.session());
 
 const allowedOrigins = [
   'http://localhost:5173', // Development frontend
-  'https://ekaduunibackend.onrender.com', // ✅ Only allow real frontend in production
+  'https://eka-duuni-frontend-kim-rautiainens-projects.vercel.app', // ✅ Only allow real frontend in production
 ];
 app.use(
   cors({
