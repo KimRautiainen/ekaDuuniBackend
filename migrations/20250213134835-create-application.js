@@ -37,17 +37,17 @@ module.exports = {
       applied_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
+        defaultValue: Sequelize.literal('SYSDATETIMEOFFSET()'),
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
+        defaultValue: Sequelize.literal('SYSDATETIMEOFFSET()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
+        defaultValue: Sequelize.literal('SYSDATETIMEOFFSET()'),
       },
     });
   },
