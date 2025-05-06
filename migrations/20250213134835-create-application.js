@@ -51,11 +51,6 @@ module.exports = {
           defaultValue: Sequelize.literal('GETDATE()'),
         },
       });
-
-      await queryInterface.sequelize.query(`
-        ALTER TABLE Applications ADD CONSTRAINT chk_status
-        CHECK (status IN ('pending', 'reviewed', 'interview', 'rejected', 'accepted'))
-      `);
     } catch (err) {
       console.error('❌ Migration failed:', err);
       throw err;

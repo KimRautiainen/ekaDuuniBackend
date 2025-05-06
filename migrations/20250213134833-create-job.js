@@ -78,26 +78,7 @@ module.exports = {
         defaultValue: Sequelize.literal('GETDATE()'),
       },
     });
-
-    // Add CHECK constraints (optional, but good for MSSQL safety)
-    await queryInterface.sequelize.query(`
-      ALTER TABLE Jobs ADD CONSTRAINT chk_apply_type
-      CHECK (apply_type IN ('internal', 'external'))
-    `);
-    await queryInterface.sequelize.query(`
-      ALTER TABLE Jobs ADD CONSTRAINT chk_work_type
-      CHECK (work_type IN ('remote', 'onsite', 'hybrid'))
-    `);
-    await queryInterface.sequelize.query(`
-      ALTER TABLE Jobs ADD CONSTRAINT chk_employment_type
-      CHECK (employment_type IN ('full_time', 'part_time', 'contract', 'internship'))
-    `);
-    await queryInterface.sequelize.query(`
-      ALTER TABLE Jobs ADD CONSTRAINT chk_salary_type
-      CHECK (salary_type IN ('hourly', 'monthly', 'yearly'))
-    `);
   },
-
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Jobs');
   },

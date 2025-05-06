@@ -46,12 +46,6 @@ module.exports = {
         defaultValue: Sequelize.literal('GETDATE()'),
       },
     });
-
-    // ✅ Add constraint to restrict values
-    await queryInterface.sequelize.query(`
-      ALTER TABLE Users ADD CONSTRAINT chk_user_role
-      CHECK (role IN ('junior_dev', 'employer'))
-    `);
   },
 
   async down(queryInterface, Sequelize) {

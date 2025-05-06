@@ -34,14 +34,7 @@ module.exports = {
         defaultValue: Sequelize.literal('GETDATE()'),
       },
     });
-
-    // ✅ Optional: Add a CHECK constraint to enforce allowed values
-    await queryInterface.sequelize.query(`
-      ALTER TABLE ProjectMedia ADD CONSTRAINT chk_media_type
-      CHECK (media_type IN ('image', 'video'))
-    `);
   },
-
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('ProjectMedia');
   },
