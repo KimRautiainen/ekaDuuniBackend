@@ -70,12 +70,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('GETDATE()'),
+        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('GETDATE()'),
+        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
       },
     });
   },

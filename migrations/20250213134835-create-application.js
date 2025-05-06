@@ -37,17 +37,17 @@ module.exports = {
       applied_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('GETDATE()'),
+        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('GETDATE()'),
+        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('GETDATE()'),
+        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
       },
     });
   },
