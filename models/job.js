@@ -109,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Job',
-      tableName: 'jobs',
+      tableName: 'Jobs',
       timestamps: true,
     }
   );

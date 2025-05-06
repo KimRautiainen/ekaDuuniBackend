@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'ProjectMedia',
-      tableName: 'projectmedia',
+      tableName: 'Projectmedia',
       timestamps: true,
       underscored: false,
     }
