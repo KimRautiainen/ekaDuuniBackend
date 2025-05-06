@@ -42,17 +42,17 @@ module.exports = {
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
+        defaultValue: Sequelize.NOW,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('SYSUTCDATETIME()'),
+        defaultValue: Sequelize.NOW,
       },
     });
   },
