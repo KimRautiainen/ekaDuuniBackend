@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Jobs', {
@@ -30,7 +30,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       apply_type: {
-        type: Sequelize.ENUM('internal', 'external'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       job_description: {
@@ -48,16 +48,11 @@ module.exports = {
         type: Sequelize.DATE,
       },
       work_type: {
-        type: Sequelize.ENUM('remote', 'onsite', 'hybrid'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       employment_type: {
-        type: Sequelize.ENUM(
-          'full_time',
-          'part_time',
-          'contract',
-          'internship'
-        ),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       min_salary: {
@@ -67,7 +62,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       salary_type: {
-        type: Sequelize.ENUM('hourly', 'monthly', 'yearly'),
+        type: Sequelize.STRING,
       },
       salary_details: {
         type: Sequelize.TEXT,
@@ -85,10 +80,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Jobs', 'apply_type');
-    await queryInterface.removeColumn('Jobs', 'work_type');
-    await queryInterface.removeColumn('Jobs', 'employment_type');
-    await queryInterface.removeColumn('Jobs', 'salary_type');
     await queryInterface.dropTable('Jobs');
   },
 };

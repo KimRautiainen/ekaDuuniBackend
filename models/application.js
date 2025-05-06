@@ -42,15 +42,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       status: {
-        type: DataTypes.ENUM(
-          'pending',
-          'reviewed',
-          'interview',
-          'rejected',
-          'accepted',
-        ),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'pending',
+        validate: {
+          isIn: [['pending', 'reviewed', 'interview', 'rejected', 'accepted']],
+        },
       },
       applied_at: {
         type: DataTypes.DATE,
@@ -61,9 +58,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Application',
-      tableName: 'applications',
+      tableName: 'Applications',
       timestamps: true,
-      underscored: true,
+      underscored: false,
     },
   );
 

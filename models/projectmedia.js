@@ -1,15 +1,9 @@
 'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class ProjectMedia extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // -- Define associations -- //
-
       // A ProjectMedia belongs to a Project
       ProjectMedia.belongsTo(models.Project, {
         foreignKey: 'project_id',
@@ -17,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   ProjectMedia.init(
     {
       project_id: {
@@ -28,14 +23,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       media_type: {
-        type: DataTypes.ENUM('image', 'video'),
+        type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isIn: [['image', 'video']],
+        },
       },
     },
     {
       sequelize,
       modelName: 'ProjectMedia',
-      tableName: 'projectmedia',
+      tableName: 'Projectmedia',
       timestamps: true,
       underscored: false,
     }

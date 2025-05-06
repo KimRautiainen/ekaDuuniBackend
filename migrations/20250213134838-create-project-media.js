@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('ProjectMedia', {
@@ -20,7 +20,7 @@ module.exports = {
         allowNull: false,
       },
       media_type: {
-        type: Sequelize.ENUM('image', 'video'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
@@ -36,7 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('ProjectMedia', 'media_type');
     await queryInterface.dropTable('ProjectMedia');
   },
 };

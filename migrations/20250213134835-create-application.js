@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Applications', {
@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: 'Users', key: 'id' },
-        onDelete: 'CASCADE',
+        onDelete: 'NO ACTION',
       },
       job_id: {
         type: Sequelize.INTEGER,
@@ -30,13 +30,7 @@ module.exports = {
         allowNull: true,
       },
       status: {
-        type: Sequelize.ENUM(
-          'pending',
-          'reviewed',
-          'interview',
-          'rejected',
-          'accepted'
-        ),
+        type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'pending',
       },
@@ -57,8 +51,8 @@ module.exports = {
       },
     });
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Applications', 'status');
     await queryInterface.dropTable('Applications');
   },
 };
