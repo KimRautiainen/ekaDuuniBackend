@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('ProjectMedia', {
@@ -20,23 +20,29 @@ module.exports = {
         allowNull: false,
       },
       media_type: {
-        type: Sequelize.ENUM('image', 'video'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.literal('GETDATE()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.literal('GETDATE()'),
       },
     });
+
+    // ✅ Optional: Add a CHECK constraint to enforce allowed values
+    await queryInterface.sequelize.query(`
+      ALTER TABLE ProjectMedia ADD CONSTRAINT chk_media_type
+      CHECK (media_type IN ('image', 'video'))
+    `);
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('ProjectMedia', 'media_type');
     await queryInterface.dropTable('ProjectMedia');
   },
 };

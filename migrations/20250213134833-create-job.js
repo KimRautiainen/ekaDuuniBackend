@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Jobs', {
@@ -30,7 +30,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       apply_type: {
-        type: Sequelize.ENUM('internal', 'external'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       job_description: {
@@ -48,16 +48,11 @@ module.exports = {
         type: Sequelize.DATE,
       },
       work_type: {
-        type: Sequelize.ENUM('remote', 'onsite', 'hybrid'),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       employment_type: {
-        type: Sequelize.ENUM(
-          'full_time',
-          'part_time',
-          'contract',
-          'internship'
-        ),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       min_salary: {
@@ -67,7 +62,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       salary_type: {
-        type: Sequelize.ENUM('hourly', 'monthly', 'yearly'),
+        type: Sequelize.STRING,
       },
       salary_details: {
         type: Sequelize.TEXT,
@@ -75,20 +70,35 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.literal('GETDATE()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.literal('GETDATE()'),
       },
     });
+
+    // Add CHECK constraints (optional, but good for MSSQL safety)
+    await queryInterface.sequelize.query(`
+      ALTER TABLE Jobs ADD CONSTRAINT chk_apply_type
+      CHECK (apply_type IN ('internal', 'external'))
+    `);
+    await queryInterface.sequelize.query(`
+      ALTER TABLE Jobs ADD CONSTRAINT chk_work_type
+      CHECK (work_type IN ('remote', 'onsite', 'hybrid'))
+    `);
+    await queryInterface.sequelize.query(`
+      ALTER TABLE Jobs ADD CONSTRAINT chk_employment_type
+      CHECK (employment_type IN ('full_time', 'part_time', 'contract', 'internship'))
+    `);
+    await queryInterface.sequelize.query(`
+      ALTER TABLE Jobs ADD CONSTRAINT chk_salary_type
+      CHECK (salary_type IN ('hourly', 'monthly', 'yearly'))
+    `);
   },
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Jobs', 'apply_type');
-    await queryInterface.removeColumn('Jobs', 'work_type');
-    await queryInterface.removeColumn('Jobs', 'employment_type');
-    await queryInterface.removeColumn('Jobs', 'salary_type');
     await queryInterface.dropTable('Jobs');
   },
 };

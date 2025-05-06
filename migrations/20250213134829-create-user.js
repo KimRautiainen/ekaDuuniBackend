@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Users', {
@@ -31,37 +31,30 @@ module.exports = {
         allowNull: true,
       },
       role: {
-        type: Sequelize.ENUM('junior_dev', 'employer'),
+        type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'junior_dev',
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.literal('GETDATE()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.literal('GETDATE()'),
       },
     });
-  },
-  async down(queryInterface, Sequelize) {
-    // ✅ Check if the column exists before trying to drop it
-    await queryInterface
-      .describeTable('Users')
-      .then(async (tableDefinition) => {
-        if (tableDefinition.role) {
-          await queryInterface
-            .removeColumn('Users', 'role')
-            .catch(() => console.log("Column 'role' not found, skipping"));
-        }
-      });
 
-    await queryInterface
-      .dropTable('Users')
-      .catch(() => console.log("Table 'Users' not found, skipping"));
+    // ✅ Add constraint to restrict values
+    await queryInterface.sequelize.query(`
+      ALTER TABLE Users ADD CONSTRAINT chk_user_role
+      CHECK (role IN ('junior_dev', 'employer'))
+    `);
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('Users');
   },
 };
