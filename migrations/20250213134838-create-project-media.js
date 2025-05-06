@@ -12,7 +12,7 @@ module.exports = {
       project_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'projects', key: 'id' },
+        references: { model: 'Projects', key: 'id' },
         onDelete: 'CASCADE',
       },
       media_url: {

@@ -6,13 +6,13 @@ module.exports = {
       job_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'jobs', key: 'id' },
+        references: { model: 'Jobs', key: 'id' },
         onDelete: 'CASCADE',
       },
       skill_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'skills', key: 'id' },
+        references: { model: 'Skills', key: 'id' },
         onDelete: 'CASCADE',
       },
       createdAt: {
