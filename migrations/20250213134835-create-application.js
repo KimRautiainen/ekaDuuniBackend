@@ -13,13 +13,13 @@ module.exports = {
         user_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'Users', key: 'id' },
+          references: { model: 'users', key: 'id' },
           onDelete: 'CASCADE',
         },
         job_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          references: { model: 'Jobs', key: 'id' },
+          references: { model: 'jobs', key: 'id' },
           onDelete: 'CASCADE',
         },
         cover_letter: {
