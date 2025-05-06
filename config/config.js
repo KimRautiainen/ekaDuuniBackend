@@ -20,6 +20,7 @@ module.exports = {
         encrypt: true,
         enableArithAbort: true,
       },
+      logging: console.log,
     },
   },
 };
