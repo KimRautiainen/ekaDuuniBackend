@@ -33,7 +33,7 @@ module.exports = {
       type: 'primary key',
       name: 'pk_project_skills',
     });
-  },
+},
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('ProjectSkills');

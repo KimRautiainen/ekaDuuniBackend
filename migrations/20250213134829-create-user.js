@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Users', {
@@ -31,11 +31,10 @@ module.exports = {
         allowNull: true,
       },
       role: {
-        type: Sequelize.ENUM('junior_dev', 'employer'),
+        type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'junior_dev',
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -48,20 +47,8 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    // ✅ Check if the column exists before trying to drop it
-    await queryInterface
-      .describeTable('Users')
-      .then(async (tableDefinition) => {
-        if (tableDefinition.role) {
-          await queryInterface
-            .removeColumn('Users', 'role')
-            .catch(() => console.log("Column 'role' not found, skipping"));
-        }
-      });
 
-    await queryInterface
-      .dropTable('Users')
-      .catch(() => console.log("Table 'Users' not found, skipping"));
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('Users');
   },
 };

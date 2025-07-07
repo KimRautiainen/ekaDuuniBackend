@@ -84,15 +84,18 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       role: {
-        type: DataTypes.ENUM('junior_dev', 'employer'),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'junior_dev',
+        validate: {
+          isIn: [['junior_dev', 'employer']],
+        },
       },
     },
     {
       sequelize,
       modelName: 'User',
-      tableName: 'users',
+      tableName: 'Users',
       timestamps: true,
       underscored: false,
     }

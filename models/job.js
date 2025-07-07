@@ -4,25 +4,21 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Job extends Model {
     static associate(models) {
-      // A Job belongs to an Employer (User)
       Job.belongsTo(models.User, {
         foreignKey: 'employer_id',
         onDelete: 'CASCADE',
       });
 
-      // A Job has many Applications
       Job.hasMany(models.Application, {
         foreignKey: 'job_id',
         onDelete: 'CASCADE',
       });
 
-      // A Job has many SavedJobs
       Job.hasMany(models.SavedJob, {
         foreignKey: 'job_id',
         onDelete: 'CASCADE',
       });
 
-      // A Job belongs to many Skills (Many-to-Many)
       Job.belongsToMany(models.Skill, {
         through: models.JobSkill,
         foreignKey: 'job_id',
@@ -54,8 +50,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       apply_type: {
-        type: DataTypes.ENUM('internal', 'external'),
+        type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isIn: [['internal', 'external']],
+        },
       },
       job_description: {
         type: DataTypes.TEXT,
@@ -74,17 +73,18 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       work_type: {
-        type: DataTypes.ENUM('remote', 'onsite', 'hybrid'),
+        type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isIn: [['remote', 'onsite', 'hybrid']],
+        },
       },
       employment_type: {
-        type: DataTypes.ENUM(
-          'full_time',
-          'part_time',
-          'contract',
-          'internship'
-        ),
+        type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isIn: [['full_time', 'part_time', 'contract', 'internship']],
+        },
       },
       min_salary: {
         type: DataTypes.INTEGER,
@@ -95,8 +95,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       salary_type: {
-        type: DataTypes.ENUM('hourly', 'monthly', 'yearly'),
+        type: DataTypes.STRING,
         allowNull: true,
+        validate: {
+          isIn: [['hourly', 'monthly', 'yearly']],
+        },
       },
       salary_details: {
         type: DataTypes.TEXT,
@@ -106,9 +109,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Job',
-      tableName: 'jobs',
+      tableName: 'Jobs',
       timestamps: true,
-      underscored: false,
     }
   );
 
